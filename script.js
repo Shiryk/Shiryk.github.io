@@ -91,6 +91,35 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSelectedObjectsList();
     calculate();
   });
+
+  document.getElementById('customer-dropdown').addEventListener('change', function() {
+    var customer = this.value;
+    var badgeDisplay = document.getElementById('badge-display');
+    
+    if (customer === 'Police Department') {
+      // Zeige Prompt mit vorausgefülltem "PD-"
+      var badgeNumber = prompt('Bitte geben Sie die Dienstnummer ein:', 'PD-');
+      
+      // Prüfe ob eine Nummer eingegeben wurde und ob sie mit "PD-" beginnt
+      if (!badgeNumber || badgeNumber === 'PD-') {
+        alert('Dienstnummer ist erforderlich für Police Department');
+        this.value = 'Private';
+        badgeDisplay.textContent = '';
+        return;
+      }
+      
+      // Stelle sicher, dass "PD-" am Anfang steht
+      if (!badgeNumber.startsWith('PD-')) {
+        badgeNumber = 'PD-' + badgeNumber;
+      }
+      
+      this.setAttribute('data-badge', badgeNumber);
+      badgeDisplay.textContent = `#${badgeNumber}`;
+    } else {
+      this.removeAttribute('data-badge');
+      badgeDisplay.textContent = '';
+    }
+  });
 });
 
 var selectedObjects = [];
@@ -148,18 +177,104 @@ function calculate() {
   var multiplier = parseFloat(document.getElementById('details-dropdown').value);
   
   selectedObjects.forEach(function(obj) {
-    sum += obj.value * obj.quantity * multiplier;
+    // Kein Aufschlag für Reparatur, Anfahrt und Anmeldungen
+    if (obj.name.startsWith('Reparatur') || obj.name.startsWith('Anfahrt') || obj.name.startsWith('Anmeldung')) {
+      sum += obj.value * obj.quantity;
+    } else {
+      sum += obj.value * obj.quantity * multiplier;
+    }
   });
   
-  // Formatiere die Summe mit Tausendertrennzeichen und 2 Nachkommastellen
   const formattedSum = sum.toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
   
-  // Füge das $-Symbol hinzu und setze das formatierte Ergebnis
   document.getElementById('result').innerText = '$' + formattedSum;
 }
+
+function sendToDiscord() {
+  var multiplier = parseFloat(document.getElementById('details-dropdown').value);
+  var customerDropdown = document.getElementById('customer-dropdown');
+  var customer = customerDropdown.value;
+  var sum = 0;
+  
+  if (customer === 'Police Department') {
+    var badgeNumber = customerDropdown.getAttribute('data-badge');
+    customer = `Police Department (${badgeNumber})`;
+  }
+  
+  selectedObjects.forEach(function(obj) {
+    // Kein Aufschlag für Reparatur, Anfahrt und Anmeldungen
+    if (obj.name.startsWith('Reparatur') || obj.name.startsWith('Anfahrt') || obj.name.startsWith('Anmeldung')) {
+      sum += obj.value * obj.quantity;
+    } else {
+      sum += obj.value * obj.quantity * multiplier;
+    }
+  });
+  
+  let formattedSum = sum.toFixed(2);
+  formattedSum = formattedSum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+  
+  const webhookData = {
+    embeds: [{
+      title: "Neue Berechnung",
+      color: 0x460fc5,
+      fields: [
+        {
+          name: "Kunde",
+          value: customer,
+          inline: true
+        },
+        {
+          name: "Ausgewählte Objekte",
+          value: selectedObjects.map(obj => {
+            let itemText;
+            if (obj.name.startsWith('Anfahrt')) {
+              const km = obj.name.match(/\((\d+)km\)/)[1];
+              itemText = `${obj.name} ($1'000/km)`;
+            } else {
+              itemText = `${obj.name} x${obj.quantity} ($${obj.value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} pro Stück)`;
+            }
+            // Füge (Kein Aufschlag) hinzu für spezielle Items
+            if (obj.name.startsWith('Reparatur') || obj.name.startsWith('Anfahrt') || obj.name.startsWith('Anmeldung')) {
+              itemText += ' (Kein Aufschlag)';
+            }
+            return itemText;
+          }).join('\n') || "Keine Objekte ausgewählt",
+          inline: false
+        },
+        {
+          name: "Multiplikator",
+          value: `${((multiplier * 100) - 100)}%`,
+          inline: true
+        },
+        {
+          name: "Gesamtbetrag",
+          value: `$${formattedSum}`,
+          inline: true
+        }
+      ],
+      timestamp: new Date().toISOString()
+    }]
+  };
+
+  fetch('https://discord.com/api/webhooks/1331007222917894259/lB3Gkpok6xkLBB1u-_Ycd7xnnNssdyGJel0NgIhZl_VxsDgEPs7NVD9A70E4ab-_v46V', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(webhookData)
+  })
+  .then(() => alert('Erfolgreich an Discord gesendet!'))
+  .catch(error => {
+    console.error('Error:', error);
+    alert('Fehler beim Senden an Discord');
+  });
+}
+
+// Event Listener für den Discord Button (füge dies zum DOMContentLoaded Event hinzu)
+document.getElementById('send-to-discord').addEventListener('click', sendToDiscord);
 
 calculate();
 document.body.classList.toggle('dark-mode');

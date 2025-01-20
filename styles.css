@@ -242,3 +242,61 @@ select {
 #selected-container h2 {
   display: inline;
 }
+
+#discord-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#send-to-discord {
+  background-color: #7289DA;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#send-to-discord:hover {
+  background-color: #5b6eae;
+}
+
+.dark-mode #send-to-discord {
+  background-color: #5865F2;
+}
+
+.dark-mode #send-to-discord:hover {
+  background-color: #4752c4;
+}
+
+#customer-dropdown {
+  display: inline-block;
+  width: auto;
+  margin-right: 10px;
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.dark-mode #customer-dropdown {
+  background-color: #888888;
+  color: #fff;
+}
+
+#badge-display {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #460fc5;
+}
+
+.dark-mode #badge-display {
+  color: #5865F2;
+}

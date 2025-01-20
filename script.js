@@ -145,7 +145,7 @@ function updateSelectedObjectsList() {
 
 function calculate() {
   var sum = 0;
-  var multiplier = parseInt(document.getElementById('details-dropdown').value);
+  var multiplier = parseFloat(document.getElementById('details-dropdown').value);
   selectedObjects.forEach(function(obj) {
     sum += obj.value * obj.quantity * multiplier;
   });

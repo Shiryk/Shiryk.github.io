@@ -1,18 +1,22 @@
 [
     {
-      "name": "Apple",
-      "value": 120
+      "name": "Tuning",
+      "value": //sölls abfrage, jedes mal unterschiedlich
     },
     {
-      "name": "Beer",
-      "value": 220
+      "name": "Reparatur",
+      "value": 4000
     },
     {
-      "name": "Car",
-      "value": 1600
+      "name": "Anmeldung",
+      "value": 10000
     },
     {
-      "name": "House",
-      "value": 5000
-    }
+      "name": "Anfahrt",
+      "value": //sölls abfrage, in km, 1km => value 1000
+    },
+    {
+      "name": "Sonstiges",
+      "value": //sölls abfrage, jedes mal unterschiedlich
+    },
 ]

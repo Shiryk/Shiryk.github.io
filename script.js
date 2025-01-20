@@ -146,10 +146,19 @@ function updateSelectedObjectsList() {
 function calculate() {
   var sum = 0;
   var multiplier = parseFloat(document.getElementById('details-dropdown').value);
+  
   selectedObjects.forEach(function(obj) {
     sum += obj.value * obj.quantity * multiplier;
   });
-  document.getElementById('result').innerText = sum;
+  
+  // Formatiere die Summe mit Tausendertrennzeichen und 2 Nachkommastellen
+  const formattedSum = sum.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  
+  // Füge das $-Symbol hinzu und setze das formatierte Ergebnis
+  document.getElementById('result').innerText = '$' + formattedSum;
 }
 
 calculate();

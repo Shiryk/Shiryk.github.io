@@ -1,7 +1,7 @@
 [
     {
       "name": "Tuning",
-      "value": //sölls abfrage, jedes mal unterschiedlich
+      "value":
     },
     {
       "name": "Reparatur",
@@ -13,10 +13,10 @@
     },
     {
       "name": "Anfahrt",
-      "value": //sölls abfrage, in km, 1km => value 1000
+      "value":
     },
     {
       "name": "Sonstiges",
-      "value": //sölls abfrage, jedes mal unterschiedlich
+      "value":
     },
 ]

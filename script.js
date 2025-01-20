@@ -5,36 +5,82 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.toggle('dark-mode');
   });
 
-  fetch('https://www.npoint.io/docs/77c6590f824c468f5f1f')
-    .then(response => response.json())
-    .then(data => {
-      var select = document.createElement('select');
-      var defaultOption = document.createElement('option');
-      defaultOption.text = 'Select';
-      select.add(defaultOption);
-      
-      data.forEach(function(item) {
-        var option = document.createElement('option');
-        option.value = item.value;
-        option.text = item.name;
-        select.add(option);
-      });
-      
-      var itemsDiv = document.getElementById('items');
-      itemsDiv.appendChild(select);
-      
-      select.addEventListener('change', function() {
-        var selectedOption = select.options[select.selectedIndex];
-        if (selectedOption.value !== '') {
-          addSelectedObject(selectedOption.text, parseInt(selectedOption.value));
-          calculate();
-          select.selectedIndex = 0;
+  const data = [
+    {
+        "name": "Tuning",
+        "value": 0
+    },
+    {
+        "name": "Reparatur",
+        "value": 4000
+    },
+    {
+        "name": "Anmeldung",
+        "value": 10000
+    },
+    {
+        "name": "Anfahrt",
+        "value": 0
+    },
+    {
+        "name": "Sonstiges",
+        "value": 0
+    }
+  ];
+
+  var select = document.createElement('select');
+  var defaultOption = document.createElement('option');
+  defaultOption.text = 'Select';
+  select.add(defaultOption);
+  
+  data.forEach(function(item) {
+    var option = document.createElement('option');
+    option.value = item.value;
+    option.text = item.name;
+    select.add(option);
+  });
+  
+  var itemsDiv = document.getElementById('items');
+  itemsDiv.appendChild(select);
+  
+  select.addEventListener('change', function() {
+    var selectedOption = select.options[select.selectedIndex];
+    if (selectedOption.value !== '') {
+      // Für Tuning und Sonstiges einen Wert abfragen
+      if (selectedOption.text === 'Tuning' || selectedOption.text === 'Sonstiges') {
+        var customValue = prompt(`Bitte geben Sie den Wert für ${selectedOption.text} ein:`);
+        if (customValue !== null) {
+          var value = parseInt(customValue);
+          if (!isNaN(value) && value >= 0) {
+            addSelectedObject(selectedOption.text, value);
+            calculate();
+          } else {
+            alert('Bitte geben Sie eine gültige positive Zahl ein.');
+          }
         }
-      });
-    })
-    .catch(error => {
-      console.error('Error loading items:', error);
-    });
+      } 
+      // Für Anfahrt Kilometer abfragen
+      else if (selectedOption.text === 'Anfahrt') {
+        var kilometers = prompt('Bitte geben Sie die Anzahl der Kilometer ein:');
+        if (kilometers !== null) {
+          var kmValue = parseInt(kilometers);
+          if (!isNaN(kmValue) && kmValue >= 0) {
+            var calculatedValue = kmValue * 1000; // Kilometer * 1000
+            addSelectedObject(`Anfahrt (${kmValue}km)`, calculatedValue);
+            calculate();
+          } else {
+            alert('Bitte geben Sie eine gültige positive Zahl für die Kilometer ein.');
+          }
+        }
+      } 
+      // Für alle anderen Optionen normal fortfahren
+      else {
+        addSelectedObject(selectedOption.text, parseInt(selectedOption.value));
+        calculate();
+      }
+      select.selectedIndex = 0;
+    }
+  });
 
   document.getElementById('details-dropdown').addEventListener('change', function() {
     calculate();

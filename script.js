@@ -96,30 +96,45 @@ document.addEventListener('DOMContentLoaded', function() {
     var customer = this.value;
     var badgeDisplay = document.getElementById('badge-display');
     
-    if (customer === 'Police Department') {
-      // Zeige Prompt mit vorausgefülltem "PD-"
-      var badgeNumber = prompt('Bitte geben Sie die Dienstnummer ein:', 'PD-');
-      
-      // Prüfe ob eine Nummer eingegeben wurde und ob sie mit "PD-" beginnt
-      if (!badgeNumber || badgeNumber === 'PD-') {
-        alert('Dienstnummer ist erforderlich für Police Department');
-        this.value = 'Private';
+    if (customer === 'Privatkunde') {
+      var customerName = prompt('Bitte geben Sie den Namen des Kunden ein:');
+      if (!customerName) {
+        alert('Name ist erforderlich für Privatkunden');
+        this.value = 'Medical Department';
         badgeDisplay.textContent = '';
         return;
       }
-      
-      // Stelle sicher, dass "PD-" am Anfang steht
-      if (!badgeNumber.startsWith('PD-')) {
-        badgeNumber = 'PD-' + badgeNumber;
+      this.setAttribute('data-customer-name', customerName);
+      badgeDisplay.textContent = `${customerName}`;
+    } 
+    else if (customer === 'Vertragskunde') {
+      var fractionName = prompt('Bitte geben Sie den Fraktionsnamen ein:');
+      var customerName = prompt('Bitte geben Sie den Namen des Kunden ein:');
+      if (!fractionName || !customerName) {
+        alert('Fraktionsname und Kundenname sind erforderlich für Vertragskunden');
+        this.value = 'Medical Department';
+        badgeDisplay.textContent = '';
+        return;
       }
-      
-      this.setAttribute('data-badge', badgeNumber);
-      badgeDisplay.textContent = `#${badgeNumber}`;
-    } else {
-      this.removeAttribute('data-badge');
+      this.setAttribute('data-fraction-name', fractionName);
+      this.setAttribute('data-customer-name', customerName);
+      badgeDisplay.textContent = `${fractionName} - ${customerName}`;
+    } 
+    else {
+      this.removeAttribute('data-fraction-name');
+      this.removeAttribute('data-customer-name');
       badgeDisplay.textContent = '';
     }
   });
+
+  // Füge diese neue Funktion am Anfang hinzu
+  function getUrlParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
+  // Hole den Benutzernamen aus der URL
+  const userName = getUrlParameter('mitglied') || 'Unbekannt';
 });
 
 var selectedObjects = [];
@@ -199,9 +214,18 @@ function sendToDiscord() {
   var customer = customerDropdown.value;
   var sum = 0;
   
-  if (customer === 'Police Department') {
-    var badgeNumber = customerDropdown.getAttribute('data-badge');
-    customer = `Police Department (${badgeNumber})`;
+  // Hole den Benutzernamen aus der URL
+  const userName = new URLSearchParams(window.location.search).get('mitglied') || 'Unbekannt';
+  
+  // Formatiere den Kundennamen basierend auf der Auswahl
+  if (customer === 'Privatkunde') {
+    var customerName = customerDropdown.getAttribute('data-customer-name');
+    customer = `Privatkunde (${customerName})`;
+  } 
+  else if (customer === 'Vertragskunde') {
+    var fractionName = customerDropdown.getAttribute('data-fraction-name');
+    var customerName = customerDropdown.getAttribute('data-customer-name');
+    customer = `Vertragskunde: ${fractionName} - ${customerName}`;
   }
   
   selectedObjects.forEach(function(obj) {
@@ -224,7 +248,7 @@ function sendToDiscord() {
         {
           name: "Kunde",
           value: customer,
-          inline: true
+          inline: false
         },
         {
           name: "Ausgewählte Objekte",
@@ -253,7 +277,12 @@ function sendToDiscord() {
           name: "Gesamtbetrag",
           value: `$${formattedSum}`,
           inline: true
-        }
+        },        
+        {
+          name: "Erstellt von",
+          value: userName,
+          inline: false
+        },
       ],
       timestamp: new Date().toISOString()
     }]

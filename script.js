@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     {
         "name": "Anmeldung",
-        "value": 10000
+        "value": 15000
     },
     {
         "name": "Anfahrt",
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var customerName = prompt('Bitte geben Sie den Namen des Kunden ein:');
       if (!customerName) {
         alert('Name ist erforderlich für Privatkunden');
-        this.value = 'Medical Department';
+        this.value = 'Privatkunde';
         badgeDisplay.textContent = '';
         return;
       }
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var customerName = prompt('Bitte geben Sie den Namen des Kunden ein:');
       if (!fractionName || !customerName) {
         alert('Fraktionsname und Kundenname sind erforderlich für Vertragskunden');
-        this.value = 'Medical Department';
+        this.value = 'Privatkunde';
         badgeDisplay.textContent = '';
         return;
       }

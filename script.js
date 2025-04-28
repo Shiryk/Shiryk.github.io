@@ -259,7 +259,7 @@ function sendToDiscord() {
     }]
   };
 
-  fetch('https://discord.com/api/webhooks/1331007222917894259/lB3Gkpok6xkLBB1u-_Ycd7xnnNssdyGJel0NgIhZl_VxsDgEPs7NVD9A70E4ab-_v46V', {
+  fetch('https://discord.com/api/webhooks/1309571416911511593/01VOx7FUk_9OqsbBlhsec-fKJu4DhUBSth5lBuYt38dlmpgA4qwufR5xuPjcbD6WoAPK', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

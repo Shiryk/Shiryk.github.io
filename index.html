@@ -8,13 +8,20 @@
 </head>
 <body>
   <header>
+    <img src="1024.png" alt="Logo" style="height: 150px;">
     <h1>Item Calculator</h1>
     <button id="dark-mode-toggle"><img src="https://img.icons8.com/ios-filled/50/day-and-night.png" alt="Dark Mode Toggle"></button>
   </header>
   <div class="container">
-    <div id="dropdown-container">
-      <h2>Select an Object</h2>
-      <div id="items"></div>
+    <div class="dropdowns-wrapper">
+      <div id="dropdown-container">
+        <h2>Select a Category</h2>
+        <div id="category"></div>
+      </div>
+      <div id="dropdown-container" class="dropdown-product">
+        <h2>Select a Product</h2>
+        <div id="product"></div>
+      </div>
     </div>
     <div id="result-selected-container">
       <div id="selected-container">
@@ -28,11 +35,10 @@
         <h2>Result</h2>
         <div id="result"></div>
         <div id="details-container">
-          <h2>Multiplication</h2>
+          <h2>Discount</h2>
           <select id="details-dropdown">
-            <option value="1">+0%</option>
-            <option value="1.3">+30%</option>
-            <option value="1.5">+50%</option>
+            <option value="1">Ohne Rabatt</option>
+            <option value="0.8">-20%</option>
           </select>
         </div>
         <div id="discord-container">

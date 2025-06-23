@@ -94,14 +94,28 @@ h2 {
   margin-top: 0;
 }
 
+.dropdowns-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
 #dropdown-container {
-  font-weight: bold;
-  font-size: 20px;
-  padding: 20px;
+  width: 50%;  /* Etwas weniger als 50% für Abstand zwischen den Containern */
+  margin-right: 20px;
   background-color: #f5f5f5;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  padding: 20px;
+}
+
+#dropdown-container.dropdown-product {
+  margin-right: 0px;
+}
+
+.dark-mode #dropdown-container {
+  background-color: #444;
 }
 
 #result-selected-container {
@@ -128,7 +142,7 @@ h2 {
 
 #details-container,
 #result-container {
-  margin-top: 45px;
+  margin-top: 0px;
   font-weight: bold;
   font-size: 24px;
   text-align: center;
@@ -140,7 +154,7 @@ h2 {
 #details-container {
   margin-left: -20px;
   flex: 1;
-  margin-top: 110px;
+  margin-top: 55px;
   width: 100%;
 }
 
@@ -246,6 +260,13 @@ select {
 #discord-container {
   margin-top: 20px;
   text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 100px;
+  margin-left: -20px;
 }
 
 #send-to-discord {
@@ -299,4 +320,15 @@ select {
 
 .dark-mode #badge-display {
   color: #5865F2;
+}
+
+#items {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.dark-mode #discord-container {
+  background-color: #444;
 }

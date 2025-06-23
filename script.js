@@ -305,6 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Hole den Benutzernamen aus der URL
   const userName = getUrlParameter('mitglied') || 'Unbekannt';
 
+  console.log("@@@@@@@@@@@@@@@@@@@@@@" + userName);
+
   // Event Listener für das zweite Dropdown
   productSelect.addEventListener('change', function() {
     var selectedOption = productSelect.options[productSelect.selectedIndex];
@@ -491,7 +493,7 @@ function sendToDiscord() {
   const prodWebhookUrl = 'https://discord.com/api/webhooks/1309571416911511593/01VOx7FUk_9OqsbBlhsec-fKJu4DhUBSth5lBuYt38dlmpgA4qwufR5xuPjcbD6WoAPK';
   const devWebhookUrl = 'https://discord.com/api/webhooks/1331007222917894259/lB3Gkpok6xkLBB1u-_Ycd7xnnNssdyGJel0NgIhZl_VxsDgEPs7NVD9A70E4ab-_v46V';
 
-  fetch(devWebhookUrl, {
+  fetch(prodWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

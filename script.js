@@ -305,8 +305,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Hole den Benutzernamen aus der URL
   const userName = getUrlParameter('mitglied') || 'Unbekannt';
 
-  console.log("@@@@@@@@@@@@@@@@@@@@@@" + userName);
-
   // Event Listener für das zweite Dropdown
   productSelect.addEventListener('change', function() {
     var selectedOption = productSelect.options[productSelect.selectedIndex];

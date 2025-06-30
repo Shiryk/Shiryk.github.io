@@ -492,7 +492,7 @@ function sendToDiscord() {
 
 
   const BACKEND_URL = 'https://los-santos-customs.vercel.app/api/send';
-  const env = 'dev';
+  const env = 'prod';
 
   fetch(BACKEND_URL, {
     method: 'POST',

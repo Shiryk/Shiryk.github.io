@@ -5,26 +5,157 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.classList.toggle('dark-mode');
   });
 
-  const data = [
+  // Erstelle das zweite Dropdown first
+  var productSelect = document.createElement('select');
+  var productDefaultOption = document.createElement('option');
+  productDefaultOption.text = 'Select';
+  productSelect.add(productDefaultOption);
+  
+  var productDropdown = document.getElementById('product');
+  productDropdown.appendChild(productSelect);
+  
+  // Initially hide the product dropdown
+  productDropdown.style.display = 'none';
+
+  const categoryData = [
     {
-        "name": "Tuning",
-        "value": 0
+        "name": "Mitarbeitertuning",
+        "value": 0,
+        "products": []
     },
     {
         "name": "Reparatur",
-        "value": 4000
+        "value": 4000,
+        "products": []
     },
     {
         "name": "Anmeldung",
-        "value": 15000
+        "value": 15000,
+        "products": []
     },
     {
         "name": "Anfahrt",
-        "value": 0
+        "value": 0,
+        "products": []
     },
     {
         "name": "Sonstiges",
-        "value": 0
+        "value": 0,
+        "products": []
+    },
+    {
+        "name": "Verbesserungen",
+        "value": 0,
+        "products": [
+            {
+                "name": "Fulltuning",
+                "value": 100000
+            },
+            {
+                "name": "Einzelne Verbesserung",
+                "value": 25000
+            }
+        ]
+    },
+    {
+        "name": "Lackierungen",
+        "value": 0,
+        "products": [
+            {
+                "name": "Farbe ohne Pearl",
+                "value": 15000
+            },
+            {
+                "name": "Farbe mit Pearl",
+                "value": 20000
+            },
+            {
+                "name": "Chameleon-Farbe",
+                "value": 25000
+            }
+        ]
+    },
+    {
+        "name": "Optik",
+        "value": 0,
+        "products": [
+            {
+                "name": "Amaturenbrett & Innenraum",
+                "value": 10000
+            },
+            {
+                "name": "Fenstertönung",
+                "value": 5000
+            },
+            {
+                "name": "Reifen ohne Qualm",
+                "value": 10000
+            },
+            {
+                "name": "Reifen mit Qualm",
+                "value": 15000
+            },
+            {
+                "name": "Zusatzdetails",
+                "value": 3000
+            },
+            {
+                "name": "Hupe",
+                "value": 1000
+            },
+            {
+                "name": "Kennzeichen",
+                "value": 500
+            },
+            {
+                "name": "Unterboden",
+                "value": 5000
+            },
+            {
+                "name": "Xenon ohne Farbe",
+                "value": 2500
+            },
+            {
+                "name": "Xenon mit Farbe",
+                "value": 5000
+            },
+            {
+                "name": "Sticker",
+                "value": 0
+            }
+        ]
+    },
+    {
+        "name": "Services",
+        "value": 0,
+        "products": [
+            {
+                "name": "Reparatur",
+                "value": 7500
+            },
+            {
+                "name": "Autowäsche",
+                "value": 0
+            },
+            {
+                "name": "Radio inkl. einbauen",
+                "value": 5000
+            }
+        ]
+    },
+    {
+        "name": "Shop",
+        "value": 0,
+        "products": [
+            {
+                "name": "Reparaturkasten / Rep.Kit",
+                "value": 10000
+            },
+            {
+                "name": "Schwämme",
+                "value": 2000
+            }
+        ]
     }
   ];
 
@@ -33,52 +164,90 @@ document.addEventListener('DOMContentLoaded', function() {
   defaultOption.text = 'Select';
   select.add(defaultOption);
   
-  data.forEach(function(item) {
+  categoryData.forEach(function(item) {
     var option = document.createElement('option');
     option.value = item.value;
     option.text = item.name;
     select.add(option);
   });
   
-  var itemsDiv = document.getElementById('items');
-  itemsDiv.appendChild(select);
+  var categoryDiv = document.getElementById('category');
+  categoryDiv.appendChild(select);
+  
+  // Function to update the product dropdown based on selected category
+  function updateProductDropdown(selectedCategory) {
+    // Clear existing options except the default one
+    while (productSelect.options.length > 1) {
+      productSelect.remove(1);
+    }
+
+    // Find the selected category and its products
+    const selectedCategoryData = categoryData.find(cat => cat.name === selectedCategory);
+    if (selectedCategoryData && selectedCategoryData.products && selectedCategoryData.products.length > 0) {
+      // Show the product dropdown
+      productDropdown.style.display = 'block';
+      // Add products to the dropdown
+      selectedCategoryData.products.forEach(function(product) {
+        var option = document.createElement('option');
+        option.value = product.value;
+        // Use only the product name, no price in parentheses
+        option.text = product.name;
+        productSelect.add(option);
+      });
+    } else {
+      // Hide the product dropdown if no products
+      productDropdown.style.display = 'none';
+    }
+  }
   
   select.addEventListener('change', function() {
     var selectedOption = select.options[select.selectedIndex];
     if (selectedOption.value !== '') {
-      // Für Tuning und Sonstiges einen Wert abfragen
-      if (selectedOption.text === 'Tuning' || selectedOption.text === 'Sonstiges') {
-        var customValue = prompt(`Bitte geben Sie den Wert für ${selectedOption.text} ein:`);
-        if (customValue !== null) {
-          var value = parseInt(customValue);
-          if (!isNaN(value) && value >= 0) {
-            addSelectedObject(selectedOption.text, value);
-            calculate();
-          } else {
-            alert('Bitte geben Sie eine gültige positive Zahl ein.');
+      // Update the product dropdown based on the selected category
+      updateProductDropdown(selectedOption.text);
+      
+      // Find the selected category data
+      const selectedCategoryData = categoryData.find(cat => cat.name === selectedOption.text);
+
+      // Only add the category if it has NO products
+      if (!selectedCategoryData.products || selectedCategoryData.products.length === 0) {
+        // Für Tuning und Sonstiges einen Wert abfragen
+        if (selectedOption.text === 'Tuning' || selectedOption.text === 'Sonstiges') {
+          var customValue = prompt(`Bitte geben Sie den Wert für ${selectedOption.text} ein:`);
+          if (customValue !== null) {
+            var value = parseInt(customValue);
+            if (!isNaN(value) && value >= 0) {
+              addSelectedObject(selectedOption.text, value);
+              calculate();
+            } else {
+              alert('Bitte geben Sie eine gültige positive Zahl ein.');
+            }
           }
-        }
-      } 
-      // Für Anfahrt Kilometer abfragen
-      else if (selectedOption.text === 'Anfahrt') {
-        var kilometers = prompt('Bitte geben Sie die Anzahl der Kilometer ein:');
-        if (kilometers !== null) {
-          var kmValue = parseInt(kilometers);
-          if (!isNaN(kmValue) && kmValue >= 0) {
-            var calculatedValue = kmValue * 1000; // Kilometer * 1000
-            addSelectedObject(`Anfahrt (${kmValue}km)`, calculatedValue);
-            calculate();
-          } else {
-            alert('Bitte geben Sie eine gültige positive Zahl für die Kilometer ein.');
+        } 
+        // Für Anfahrt Kilometer abfragen
+        else if (selectedOption.text === 'Anfahrt') {
+          var kilometers = prompt('Bitte geben Sie die Anzahl der Kilometer ein:');
+          if (kilometers !== null) {
+            var kmValue = parseInt(kilometers);
+            if (!isNaN(kmValue) && kmValue >= 0) {
+              var calculatedValue = kmValue * 1000; // Kilometer * 1000
+              addSelectedObject(`Anfahrt (${kmValue}km)`, calculatedValue);
+              calculate();
+            } else {
+              alert('Bitte geben Sie eine gültige positive Zahl für die Kilometer ein.');
+            }
           }
+        } 
+        // Für alle anderen Optionen normal fortfahren
+        else {
+          addSelectedObject(selectedOption.text, parseInt(selectedOption.value));
+          calculate();
         }
-      } 
-      // Für alle anderen Optionen normal fortfahren
-      else {
-        addSelectedObject(selectedOption.text, parseInt(selectedOption.value));
-        calculate();
       }
       select.selectedIndex = 0;
+    } else {
+      // Hide product dropdown when "Select" is chosen
+      productDropdown.style.display = 'none';
     }
   });
 
@@ -135,6 +304,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Hole den Benutzernamen aus der URL
   const userName = getUrlParameter('mitglied') || 'Unbekannt';
+
+  console.log("@@@@@@@@@@@@@@@@@@@@@@" + userName);
+
+  // Event Listener für das zweite Dropdown
+  productSelect.addEventListener('change', function() {
+    var selectedOption = productSelect.options[productSelect.selectedIndex];
+    if (selectedOption.value !== '') {
+      var cleanName = selectedOption.text; // Now this is just the product name
+
+      if (cleanName === 'Sticker') {
+        var customStickerValue = prompt('Bitte geben Sie den Preis für Sticker ein:');
+        if (customStickerValue !== null) {
+          var value = parseInt(customStickerValue);
+          if (!isNaN(value) && value >= 0) {
+            var roundedValue = Math.ceil(value / 1000) * 1000;
+            addSelectedObject(cleanName, roundedValue);
+            calculate();
+          } else {
+            alert('Bitte geben Sie eine gültige positive Zahl ein.');
+          }
+        }
+      } else {
+        addSelectedObject(cleanName, parseInt(selectedOption.value));
+        calculate();
+      }
+      productSelect.selectedIndex = 0;
+    }
+  });
 });
 
 var selectedObjects = [];
@@ -176,7 +373,12 @@ function updateSelectedObjectsList() {
       }
     });
     listItem.appendChild(quantityInput);
-    listItem.appendChild(document.createTextNode(obj.name));
+
+    // Always show the actual value used (rounded for Sticker)
+    listItem.appendChild(document.createTextNode(
+      `${obj.name} ($${obj.value.toLocaleString()})`
+    ));
+
     var removeButton = document.createElement('button');
     removeButton.innerText = 'X';
     removeButton.addEventListener('click', function() {
@@ -269,7 +471,7 @@ function sendToDiscord() {
           inline: false
         },
         {
-          name: "Multiplikator",
+          name: "Rabatt",
           value: `${((multiplier * 100) - 100)}%`,
           inline: true
         },

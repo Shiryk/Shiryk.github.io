@@ -288,12 +288,14 @@ function sendToDiscord() {
     }]
   };
 
-  fetch('https://discord.com/api/webhooks/1309571416911511593/01VOx7FUk_9OqsbBlhsec-fKJu4DhUBSth5lBuYt38dlmpgA4qwufR5xuPjcbD6WoAPK', {
+
+  const BACKEND_URL = 'https://los-santos-customs.vercel.app/api/send';
+  const env = 'dev';
+
+  fetch(BACKEND_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(webhookData)
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ webhookData, env })
   })
   .then(() => alert('Erfolgreich an Discord gesendet!'))
   .catch(error => {
